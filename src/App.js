@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import ChildComponent from './childComponent';
 
-function App() {
+
+const App = () => {
+  useEffect(() => {
+    const handleChildEvent = (event) => {
+      const message = event.detail.message;
+      alert(message)
+      event.preventDefault();
+    };
+    window.addEventListener(
+      'childEvent', handleChildEvent
+    );
+    // add function to run when custom event (childEvent) will trigger
+    return () => {
+      window.removeEventListener(
+        'childEvent', handleChildEvent
+      );
+    };
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h2>Parent Component</h2>
+      <ChildComponent/>
     </div>
   );
-}
+};
 
 export default App;
