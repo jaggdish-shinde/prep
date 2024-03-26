@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+        class MyWebComponent extends HTMLElement {
+            constructor() {
+                super();
+
+                // Create shadow DOM and add content
+
+                // this.attachShadow({
+                //     mode: 'open'
+                // })
+                // const paragraph = document.createElement('p');
+                // paragraph.textContent = 'This is a custom web component!';
+                // this.shadowRoot.appendChild(paragraph);
+
+                // if we adding the content here only, for sure it will executes this code once when element is created
+                // but is this element have never used then it will be the waste of resources .
+            }
+
+            connectedCallback() {
+                // Create shadow DOM and add content
+                // this.attachShadow({
+                //     mode: 'open'   // closed
+                // })
+                // OPEN : we can modify the custom element content which is encapsulated by shadow Dom.
+                // see function readCustomElement we can manupulate the custom element content
+
+                // CLOSED : we can not modify the custom element content, because using shadowRoot only we can 
+                // modify the custom element , bbut with closed option shadowRoot will be 'null'
+                // use this option to encapsulate the custom elemnt properly.
+                // any activety needs shadowRoot will fail so line 46 also will fails & w
+                // ill be not able to app any initial content as well
+
+                // but we can overcome this problem : we can not access shadowRoot but ehat if we store the shadowRoot in some variable ?
+                // this.myRoot = this.attachShadow({
+                //     mode: 'closed'   // closed
+                // })
+                // use myRoot to acccess the shadowRoot
+                // this.myRoot.appendChild(paragraph);
+
+
+                const paragraph = document.createElement('p');
+                paragraph.textContent = 'This is a custom web component!';
+
+                // WAYS TO ADD CONTENT IN SHADOWROOT
+                // consider shadow root as container
+                // here we created an p tag which is object so will have to append that in shadowRoot
+                this.shadowRoot.appendChild(paragraph);
+
+                // this.shadowRoot.innerHTML = paragraph
+                // this will create issue inner html is expected a string so it will try to convert that object to string 
+                // and output will like : [object HTMLParagraphElement] 
+
+                // Right way is , if not using append : 
+                // this.shadowRoot.innerHTML = `<p>sdfsdf</p>`;
+
+
+                // this executes the code when element is connected to dom .
+                // nitialization tasks may be performed multiple times if 
+                // the element is disconnected from and reconnected to the DOM.
+            }
+        }
+        customElements.define('my-web-component', MyWebComponent)
+    </script>
+
+    <script>
+        function readCustomElement () {
+            // manupulation doing here : change para color and read para content.
+            const element = document.querySelector('my-web-component')
+            const para = element.shadowRoot.querySelector('p')
+            para.style.color = 'red'
+            console.log(para.textContent)
+
+            //  to manupulate cotent with closed : 
+            // use element.myRoot
+            // shadowRoot is null but we have the access to it .
+        }
+    </script>
+
+
+<!-- references : https://youtu.be/0Ez5pojPy5o?si=tKgwlwZVbNdZyTxy -->
+
+
+</head>
+<body>
+
+    <my-web-component></my-web-component>
+    <button onclick="readCustomElement()">Click</button>
+    
+</body>
+</html>
